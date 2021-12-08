@@ -1,0 +1,202 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
+using System.Globalization;
+using System.Linq;
+using System.Web;
+using Proyecto05ciclo.Models;
+
+namespace Proyecto05ciclo.Logica
+{
+    public class ProductoDAO
+    {
+        private static ProductoDAO _instancia;
+
+        public ProductoDAO() {
+
+        }
+        //SINGLETON
+        public static ProductoDAO Instancia{
+            get
+            {
+                if (_instancia==null)
+                {
+                    _instancia=new ProductoDAO();
+                }
+                return _instancia;
+            }
+        }
+
+        public List<Producto> Listar()
+        {
+            List<Producto> oListaProducto=new List<Producto>();
+
+            using (SqlConnection oConexion=new SqlConnection(Conexion.CN))
+            {
+                SqlCommand cmd=new SqlCommand("sp_obtenerProducto",oConexion);
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                try
+                {
+                    oConexion.Open();
+                    SqlDataReader dr = cmd.ExecuteReader();
+
+                    while (dr.Read())
+                    {
+                       oListaProducto.Add(new Producto()
+                       {
+                           IdProducto = Convert.ToInt32(dr["IdProducto"].ToString()),
+                           Nombre = dr["Nombre"].ToString(),
+                           Descripcion = dr["Descripcion"].ToString(),
+                           oMarca = new Marca()
+                           {
+                               IdMarca = Convert.ToInt32(dr["IdMarca"].ToString()),
+                               Descripcion = dr["DescripcionMarca"].ToString()
+                           },
+                           oCategoria = new Categoria()
+                           {
+                               IdCategoria = Convert.ToInt32(dr["IdCategoria"].ToString()),
+                               Descripcion = dr["DescripcionCategoria"].ToString()
+                           },
+                           Precio = Convert.ToDecimal(dr["Precio"].ToString(),new CultureInfo("es-PE")),
+                           Stock = Convert.ToInt32(dr["Stock"].ToString()),
+                           RutaImagen = dr["RutaImagen"].ToString(),
+                           Activo = Convert.ToBoolean(dr["Activo"].ToString())
+                           //base64 y extension no se ponen, se necesitan en el front para json
+                       }); 
+                    }
+                    dr.Close();
+                    return oListaProducto;
+                }
+                catch (Exception e)
+                {
+                    System.Diagnostics.Debug.WriteLine("Entro al catch de obtener Producto " + e.Message);
+                    oListaProducto = null;
+                    return oListaProducto;
+                }
+            }
+        }
+
+        public int Registrar(Producto oProducto)
+        {
+            int respuesta = 0;
+            using (SqlConnection oConexion = new SqlConnection(Conexion.CN))
+            {
+                try
+                {
+                    SqlCommand cmd = new SqlCommand("sp_registrarProducto", oConexion);
+                    cmd.Parameters.AddWithValue("Nombre", oProducto.Nombre );
+                    cmd.Parameters.AddWithValue("Descripcion", oProducto.Descripcion );
+                    cmd.Parameters.AddWithValue("IdMarca", oProducto.oMarca.IdMarca );
+                    cmd.Parameters.AddWithValue("IdCategoria", oProducto.oCategoria.IdCategoria);
+                    cmd.Parameters.AddWithValue("Precio", oProducto.Precio );
+                    cmd.Parameters.AddWithValue("Stock", oProducto.Stock );
+                    cmd.Parameters.AddWithValue("RutaImagen",oProducto.RutaImagen );
+                    cmd.Parameters.Add("Resultado", SqlDbType.Int).Direction = ParameterDirection.Output;
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    oConexion.Open();
+
+                    cmd.ExecuteNonQuery();
+
+                    respuesta = Convert.ToInt32(cmd.Parameters["Resultado"].Value);
+
+                }
+                catch (Exception e)
+                {
+                    System.Diagnostics.Debug.WriteLine("Entro al catch de registrar Producto " + e.Message);
+                    respuesta = 0;
+                }
+            }
+            return respuesta;
+        }
+
+        public bool Modificar(Producto oProducto)
+        {
+            bool respuesta = false;
+            using (SqlConnection oConexion = new SqlConnection(Conexion.CN))
+            {
+                try
+                {
+                    SqlCommand cmd = new SqlCommand("sp_editarProducto", oConexion);
+                    cmd.Parameters.AddWithValue("IdProducto", oProducto.IdProducto);
+                    cmd.Parameters.AddWithValue("Nombre", oProducto.Nombre);
+                    cmd.Parameters.AddWithValue("Descripcion", oProducto.Descripcion);
+                    cmd.Parameters.AddWithValue("IdMarca", oProducto.oMarca.IdMarca);
+                    cmd.Parameters.AddWithValue("IdCategoria", oProducto.oCategoria.IdCategoria);
+                    cmd.Parameters.AddWithValue("Precio", oProducto.Precio);
+                    cmd.Parameters.AddWithValue("Stock", oProducto.Stock);
+                    cmd.Parameters.AddWithValue("Activo", oProducto.Activo);
+                    cmd.Parameters.Add("Resultado", SqlDbType.Int).Direction = ParameterDirection.Output;
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    oConexion.Open();
+
+                    cmd.ExecuteNonQuery();
+
+                    respuesta = Convert.ToBoolean(cmd.Parameters["Resultado"].Value);
+
+                }
+                catch (Exception e)
+                {
+                    System.Diagnostics.Debug.WriteLine("Entro al catch de obtener Usuario " + e.Message);
+                    respuesta = false;
+                }
+            }
+            return respuesta;
+        }
+
+        public bool ActualizarRutaImagen(Producto oProducto)
+        {
+            bool respuesta = true;
+            using (SqlConnection oConexion = new SqlConnection(Conexion.CN))
+            {
+                try
+                {
+                    SqlCommand cmd = new SqlCommand("sp_actualizarRutaImagen", oConexion);
+                    cmd.Parameters.AddWithValue("IdProducto", oProducto.IdProducto);
+                    cmd.Parameters.AddWithValue("RutaImagen", oProducto.RutaImagen);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    oConexion.Open();
+                    cmd.ExecuteNonQuery();
+                }
+                catch (Exception e)
+                {
+                    System.Diagnostics.Debug.WriteLine("Entro al catch de obtener Usuario " + e.Message);
+                    respuesta = false;
+                }
+            }
+            return respuesta;
+        }
+
+        public bool Eliminar(int id)
+        {
+            bool respuesta = true;
+            using (SqlConnection oConexion = new SqlConnection(Conexion.CN))
+            {
+                try
+                {
+                    SqlCommand cmd = new SqlCommand("delete from Producto where idProducto = @id", oConexion);
+                    cmd.Parameters.AddWithValue("@id", id);
+                    cmd.CommandType = CommandType.Text;
+
+                    oConexion.Open();
+
+                    cmd.ExecuteNonQuery();
+
+                    respuesta = true;
+
+                }
+                catch (Exception e)
+                {
+                    System.Diagnostics.Debug.WriteLine("Entro al catch de obtener Usuario " + e.Message);
+                    respuesta = false;
+                }
+
+            }
+
+            return respuesta;
+        }
+    }
+}

@@ -1,0 +1,252 @@
+﻿
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <meta charset="utf-8" />
+    <link rel="shortcut icon" href="~/Imagenes/Icono/favicon.ico">
+    <title>GAMETEC | Compra al mejor precio</title>
+    @Styles.Render("~/Content/css")
+    @Styles.Render("~/Content/PluginsCSS")
+    @Scripts.Render("~/bundles/modernizr")
+</head>
+<body>
+
+    <nav class="navbar navbar-expand navbar-dark fixed-top bg-dark">
+        <div class="container-fluid">
+
+            <!-- Navbar Brand-->
+            <a class="navbar-brand ps-3" href="@Url.Action("Index","Tienda")" style="width:180px !important">GAMETEC</a>
+            <!-- Sidebar Toggle-->
+            <a class="nav-link text-white ps-3" href="@Url.Action("Index","Tienda")" style="width:100px !important">Inicio</a>
+            <ul class="navbar-nav me-2">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle btn-ver-categoria" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-bars"></i> Categorias</a>
+                    <ul class="dropdown-menu dropdown-menu-end row-categoria" aria-labelledby="navbarDropdown">
+                        <li></li>
+                    </ul>
+                </li>
+            </ul>
+            <!-- Navbar-->
+            @{
+                if (((Proyecto05ciclo.Models.Usuario)Session["Usuario"]).EsAdministrador == false)
+                {
+                    <form action="@Url.Action("Carrito","Tienda")" method="post" class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
+                        <button class="btn btn-close-white" type="submit">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span class="badge bg-dark text-white ms-1 rounded-pill contador-carrito">0</span>
+                        </button>
+                    </form>
+
+                    <ul class="navbar-nav me-2">
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                                <li><a class="dropdown-item" href="@Url.Action("Index","Tienda")">Ir a Tienda</a></li>
+                                <li><a class="dropdown-item" href="@Url.Action("Compras","Tienda")">Mis Compras</a></li>
+                                <li><a class="dropdown-item" href="@Url.Action("Usuario","Tienda")">Mi Perfil</a></li>
+                                <li><hr class="dropdown-divider" /></li>
+                                <li><a class="dropdown-item" href="@Url.Action("CerrarSesion","Tienda")">Cerrar Sesión</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                }
+                else
+                {
+                    <ul class="navbar-nav me-2">
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                                <li><a class="dropdown-item" href="@Url.Action("CerrarSesion","Tienda")">Cerrar Sesión</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                }
+            }
+
+        </div>
+    </nav>
+    <main class="container-fluid">
+        @RenderBody()
+    </main>
+    <!-- Footer -->
+    <footer class="bg-dark text-center text-white">
+        <!-- Grid container -->
+        <div class="container p-4">
+            <!-- Section: Social media -->
+            <p>Siguenos:</p>
+            <section class="mb-4">
+                <!-- Facebook -->
+                <a class="btn btn-outline-light btn-floating m-1" href="#!" role="button">
+                    <i class="fab fa-facebook-f"></i>
+                </a>
+
+                <!-- Twitter -->
+                <a class="btn btn-outline-light btn-floating m-1" href="https://twitter.com/CiberTweets" target="_blank" role="button">
+                    <i class="fab fa-twitter"></i>
+                </a>
+
+                <!-- Instagram -->
+                <a class="btn btn-outline-light btn-floating m-1" href="#!" role="button">
+                    <i class="fab fa-instagram"></i>
+                </a>
+
+                <!-- Linkedin -->
+                <a class="btn btn-outline-light btn-floating m-1" href="#!" role="button">
+                    <i class="fab fa-linkedin-in"></i>
+                </a>
+            </section>
+            <!-- Section: Social media -->
+            <!-- Section: Text -->
+            <section class="mb-4">
+                <p>
+                    Gametec ofrece productos totalmente confiables, se asegura de que el cliente vea el proceso desde que se escoge el juego hasta que se procede con el pago, siendo todo totalmente transparente.
+                </p>
+            </section>
+            <!-- Section: Text -->
+            <!-- Section: Links -->
+            <section class="">
+                <!--Grid row-->
+                <div class="row">
+                    <!--Grid column-->
+                    <div class="col-lg-6 col-md-6 mb-4 mb-md-0">
+                        <h5 class="text-uppercase">Mapa de Sitio</h5>
+
+                        <ul class="list-group mb-0">
+                            <li>
+                                <a href="#!" class="text-white">Inicio</a>
+                            </li>
+                            <li>
+                                <a href="#!" class="text-white">Carrito</a>
+                            </li>
+                            <li>
+                                <a href="#!" class="text-white">Compras</a>
+                            </li>
+                            <li>
+                                <a href="#!" class="text-white">Perfil de Usuario</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <!--Grid column-->
+                    <!--Grid column-->
+                    <div class="col-lg-6 col-md-6 mb-4 mb-md-0">
+                        <h5 class="text-uppercase">Contacto</h5>
+                        <ul class="list-unstyled mb-0">
+                            <li>
+                                <a href="#!" class="text-white">Direccion</a>
+                            </li>
+                            <li>
+                                <a href="#!" class="text-white">Whatsapp</a>
+                            </li>
+                            <li>
+                                <a href="#!" class="text-white">Consultas y sugerencias</a>
+                            </li>
+                            <li>
+                                <a href="#!" class="text-white">Medios de pago</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <!--Grid row-->
+            </section>
+            <!-- Section: Links -->
+        </div>
+        <!-- Grid container -->
+        <!-- Copyright -->
+        <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
+            © 2021 Copyright:
+            <a class="text-white" href="https://www.cibertec.edu.pe/" target="_blank">GAMETEC</a>
+        </div>
+        <!-- Copyright -->
+    </footer>
+    <!-- Footer -->
+
+    <div class="position-fixed top-0 end-0 p-3 mt-5" style="z-index: 5">
+        <div id="toast-carrito" class="toast hide" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="2000">
+            <div class="toast-body bg-success text-white">
+                <div class="d-flex">
+                    <i class="fas fa-check fa-2x"></i> <label style="margin-left: 10px !important">Añadido al carrito</label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="position-fixed top-0 end-0 p-3 mt-5" style="z-index: 5">
+        <div id="toast-alerta" class="toast hide" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="3000">
+            <div class="toast-body bg-danger text-white">
+                <div class="d-flex">
+                    <i class="fas fa-exclamation-circle fa-2x"></i> <label id="mensaje-error" class="ml-2" style="margin-left: 10px !important">Error al añadir</label>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/Content/PluginsJS")
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js" crossorigin="anonymous"></script>
+    <script>
+
+
+            $(document).ready(function () {
+                obtenerCantidad();
+            })
+            function obtenerCantidad() {
+                jQuery.ajax({
+                    url: '@Url.Action("CantidadCarrito", "Tienda")',
+                    type: "GET",
+                    data: null,
+                    dataType: "json",
+                    contentType: "application/json; charset=utf-8",
+                    success: function (data) {
+                        $(".contador-carrito").text(data.respuesta);
+                    },
+                    error: function (error) {
+                        console.log(error)
+                    },
+                    beforeSend: function () {
+
+                    },
+                });
+
+            }
+            $(document).on('click', '.btn-agregar-carrito', function (event) {
+
+                var request = {
+                    oCarrito: {
+                        oProducto: { IdProducto: $(this).data("idproducto")  }
+                    }
+                }
+
+                jQuery.ajax({
+                    url: '@Url.Action("InsertarCarrito", "Tienda")',
+                    type: "POST",
+                    data: JSON.stringify(request),
+                    dataType: "json",
+                    contentType: "application/json; charset=utf-8",
+                    success: function (data) {
+                        var actual = parseInt($(".contador-carrito").text());
+                        if (data.respuesta != 0) {
+                            actual = actual + 1;
+                            $(".contador-carrito").text(actual);
+                            $('#toast-carrito').toast('show');
+                        }
+                    },
+                    error: function (error) {
+                        console.log(error)
+                    },
+                    beforeSend: function () {
+
+                    },
+                });
+
+            });
+
+    </script>
+    @RenderSection("scripts", required: false)
+</body>
+</html>
+
